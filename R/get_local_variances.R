@@ -9,6 +9,7 @@
 #'
 #' @return A vector of local variances
 #'
+#'@export
 
 get_local_variances <- function(y, window_size = 20, overlapping = TRUE) {
   n <- length(y)
