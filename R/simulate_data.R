@@ -4,10 +4,10 @@
 #' non stationarity is coded to increase linearly with time
 #'
 #' @param n length of the time series
-#' @param mu Mean value of the Gaussian error (Default = 0)
 #' @param sigma Standar deviation of the Gaussian error (Default = 1)
-#' @param mu_t Boolean. Should the time series incorporate a linear trend (Default = FALSE)
-#' @param sigma_t Boolean Should the time series incorporate herteroskedasticity (Default = FALSE)
+#' @param lambda Boolean. Should the time series exponential growth in variance (Default = FALSE)
+#' @param homo Boolean. Should the time series incorporate homoskedasticity (Default = TRUE)
+#' @param trend Character. Form of trend: "none", "linear", "sinusoid", "both"
 #'
 #' @section Model:
 #'
@@ -16,19 +16,41 @@
 #'
 #' @return vector
 #'
+#'@export
 
-simulate_data <- function(n, mu = 0, sigma = 1, mu_t = FALSE, sigma_t = FALSE) {
-  t <- 1:n
-  if (sigma_t) {
-    errors <- rnorm(n, mean = mu, sd = sqrt(t) * sigma)
+simulate_data <- function(
+  n,
+  sigma = 1,
+  lambda = FALSE,
+  homo = TRUE,
+  trend = c("none", "linear", "sinusoid", "both")
+) {
+  trend <- match.arg(trend)
+
+  if (!lambda && homo) {
+    errors <- rnorm(n, mean = 0, sd = sigma)
+  } else if (!lambda && !homo) {
+    t <- seq(0, 1, length.out = n)
+    errors <- rnorm(n, mean = 0, sd = sigma * t)
   } else {
-    errors <- rnorm(n, mean = mu, sd = sigma)
+    # lambda is TRUE regardless of homo
+    t <- seq(0, 1, length.out = n)
+    errors <- rnorm(n, mean = 0, sd = exp(sigma * t))
   }
 
-  if (mu_t) {
-    ts <- t + errors
-  } else {
-    ts <- errors
+  ## Simulate a trend
+  if (trend == "none") {
+    sim_trend <- 0
+  } else if (trend == "linear") {
+    sim_trend <- seq(0, 50, length.out = n)
+  } else if (trend == "sinusoid") {
+    sim_trend <- 10 * sin(seq(0, 3 * pi, length.out = n))
+  } else if (trend == "both") {
+    sim_trend <- seq(0, 50, length.out = n) +
+      10 * sin(seq(0, 3 * pi, length.out = n))
   }
-  return(ts)
+
+  y <- sim_trend + errors
+
+  return(y)
 }
