@@ -34,3 +34,18 @@ metric_iqr_log_var <- function(y, window_size = 20, overlapping = TRUE) {
   iqr_val <- IQR(log_vars)
   return(iqr_val)
 }
+
+
+#' Compute all metrics
+#'
+#' @description Wrapper function to calculate all metrics at once
+#'
+#' @inheritParams get_local_variances
+#'
+#' @export
+compute_all_metrics <- function(y, window_size = 20, overlapping = TRUE) {
+  c(
+    cv_var = metric_cv_var(y, window_size, overlapping = TRUE),
+    iqr_log_var = metric_iqr_log_var(y, window_size, overlapping = TRUE)
+  )
+}
