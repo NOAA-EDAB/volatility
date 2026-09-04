@@ -4,18 +4,24 @@
 \alias{simulate_data}
 \title{simulate time series.}
 \usage{
-simulate_data(n, mu = 0, sigma = 1, mu_t = FALSE, sigma_t = FALSE)
+simulate_data(
+  n,
+  sigma = 1,
+  lambda = FALSE,
+  homo = TRUE,
+  trend = c("none", "linear", "sinusoid", "both")
+)
 }
 \arguments{
 \item{n}{length of the time series}
 
-\item{mu}{Mean value of the Gaussian error (Default = 0)}
-
 \item{sigma}{Standar deviation of the Gaussian error (Default = 1)}
 
-\item{mu_t}{Boolean. Should the time series incorporate a linear trend (Default = FALSE)}
+\item{lambda}{Boolean. Should the time series exponential growth in variance (Default = FALSE)}
 
-\item{sigma_t}{Boolean Should the time series incorporate herteroskedasticity (Default = FALSE)}
+\item{homo}{Boolean. Should the time series incorporate homoskedasticity (Default = TRUE)}
+
+\item{trend}{Character. Form of trend: "none", "linear", "sinusoid", "both"}
 }
 \value{
 vector
